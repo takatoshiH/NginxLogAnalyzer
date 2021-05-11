@@ -26,8 +26,9 @@ function analyze(arr) {
             ua, // User-Agent
         ] = line.match(regex);
 
-        page = page.replace(/\?[^ ]* /, ' ');
+        page = removeQueryParameters(page);
 
+        // それぞれのページのPVの集計
         const m = pages.find(x => x.page === page);
         if (m) {
             m.count += 1;
@@ -35,22 +36,16 @@ function analyze(arr) {
             pages.push({page, count: 1});
         }
     }
-
-    pages = removeApiAndResourceAccess(pages);
-    return pages;
+    return removeApiAndResourceAccess(pages);
 }
 
 function removeApiAndResourceAccess(result) {
+    const wantToExcludeStrings = ['/api/', '/img/', '/image', '/js/', '/css/','.json', '.png'];
     result.forEach(page => {
-        if(page.page.includes('/api/')
-            || page.page.includes('/img/')
-            || page.page.includes('/image')
-            || page.page.includes('/js/')
-            || page.page.includes('/css/')
-            || page.page.includes('.json')
-            || page.page.includes('.png')) {
-            page.count = 0;
-        }
+        wantToExcludeStrings.forEach(string => {
+            if(page.page.includes(string)) page.count = 0;
+        });
+
     });
 
     return result;
@@ -59,8 +54,12 @@ function removeApiAndResourceAccess(result) {
 function countUPTotalPageView(result) {
     let totalPageView = 0;
     result.forEach(page => {
-        if(page.count != 0) totalPageView += page.count;
+        if(!page.count) totalPageView += page.count;
     });
 
     return totalPageView;
+}
+
+function removeQueryParameters(url) {
+    return url.replace(/\?[^ ]* /, ' ');
 }
