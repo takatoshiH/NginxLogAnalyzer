@@ -28,7 +28,6 @@ function analyze(arr) {
 
         page = removeQueryParameters(page);
 
-        // それぞれのページのPVの集計
         const m = pages.find(x => x.page === page);
         if (m) {
             m.count += 1;
@@ -45,7 +44,6 @@ function removeApiAndResourceAccess(result) {
         wantToExcludeStrings.forEach(string => {
             if(page.page.includes(string)) page.count = 0;
         });
-
     });
 
     return result;
@@ -56,7 +54,6 @@ function countUPTotalPageView(result) {
     result.forEach(page => {
         if(!page.count) totalPageView += page.count;
     });
-
     return totalPageView;
 }
 

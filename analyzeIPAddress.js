@@ -12,6 +12,7 @@ console.log(result);
 function analyze(arr) {
     let pages = [];
     for (let len = arr.length, i = 0; i < len; i++) {
+
         const line = arr[i].trim();
         let [
             src, // 元々の入力データ
